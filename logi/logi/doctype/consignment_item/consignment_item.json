@@ -1,0 +1,93 @@
+{
+ "_liked_by": "[\"Administrator\"]",
+ "actions": [],
+ "allow_rename": 1,
+ "creation": "2025-12-17 15:53:23.849923",
+ "doctype": "DocType",
+ "editable_grid": 1,
+ "engine": "InnoDB",
+ "field_order": [
+  "details_section",
+  "description",
+  "packages",
+  "packages_uom",
+  "actual_weight",
+  "charged_weight",
+  "weight_uom",
+  "rate",
+  "extra_charges",
+  "billed_at"
+ ],
+ "fields": [
+  {
+   "fieldname": "details_section",
+   "fieldtype": "Section Break",
+   "label": "Details"
+  },
+  {
+   "fieldname": "description",
+   "fieldtype": "Data",
+   "label": "Description"
+  },
+  {
+   "fieldname": "packages",
+   "fieldtype": "Int",
+   "label": "Packages"
+  },
+  {
+   "fieldname": "packages_uom",
+   "fieldtype": "Link",
+   "label": "Uom",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "actual_weight",
+   "fieldtype": "Float",
+   "label": "Actual Weight"
+  },
+  {
+   "fieldname": "charged_weight",
+   "fieldtype": "Float",
+   "label": "Charged Weight"
+  },
+  {
+   "fieldname": "weight_uom",
+   "fieldtype": "Link",
+   "label": "Weight Uom",
+   "options": "UOM"
+  },
+  {
+   "fieldname": "rate",
+   "fieldtype": "Currency",
+   "label": "Rate",
+   "precision": "2"
+  },
+  {
+   "fieldname": "extra_charges",
+   "fieldtype": "Currency",
+   "label": "Extra Charges",
+   "precision": "2"
+  },
+  {
+   "fieldname": "billed_at",
+   "fieldtype": "Link",
+   "label": "Billed at",
+   "options": "Branch"
+  }
+ ],
+ "grid_page_length": 50,
+ "index_web_pages_for_search": 1,
+ "istable": 1,
+ "links": [],
+ "modified": "2025-12-30 15:48:59.286368",
+ "modified_by": "Administrator",
+ "module": "Logi",
+ "name": "Consignment Item",
+ "owner": "shivengupta11@gmail.com",
+ "permissions": [],
+ "row_format": "Dynamic",
+ "rows_threshold_for_grid_search": 20,
+ "sort_field": "modified",
+ "sort_order": "DESC",
+ "states": []
+}

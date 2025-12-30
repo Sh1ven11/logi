@@ -1,0 +1,57 @@
+[
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Lorry Hire Challan",
+  "enabled": 1,
+  "modified": "2025-12-20 11:55:43.692064",
+  "module": null,
+  "name": "LorryHireAmt",
+  "script": "frappe.ui.form.on('Lorry Hire Challan', {\n    total_weight: function(frm) {\n        calculate_hire(frm);\n    },\n    hire_rate: function(frm) {\n        calculate_hire(frm);\n    }\n});\n\nfunction calculate_hire(frm) {\n    if (frm.doc.total_weight && frm.doc.hire_rate) {\n        let calculated_amount = frm.doc.total_weight * frm.doc.hire_rate;\n        frm.set_value('lorry_hire_amount', calculated_amount);\n    }\n}\n",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sales Invoice",
+  "enabled": 0,
+  "modified": "2025-12-24 17:43:34.612789",
+  "module": null,
+  "name": "Sales Invoice",
+  "script": "frappe.ui.form.on(\"Sales Invoice\", {\n    refresh(frm) {\n        if (!frm.is_new()) return;\n\n        frm.add_custom_button(\"Fetch Consignment Notes\", () => {\n            frappe.prompt([\n                {\n                    label: \"Customer\",\n                    fieldname: \"customer\",\n                    fieldtype: \"Link\",\n                    options: \"Customer\",\n                    reqd: 1\n                }\n            ], (values) => {\n                fetch_consignment_notes(frm, values.customer);\n            });\n        });\n    }\n});\n\nfunction fetch_consignment_notes(frm, customer) {\n    frappe.call({\n        method: \"frappe.client.get_list\",\n        args: {\n            doctype: \"Consignment Note\",\n            filters: {\n                customer: customer,\n                invoiced: 0\n            },\n            fields: [\"name\", \"posting_date\", \"route\", \"freight_amount\"]\n        },\n        callback: function(r) {\n            if (!r.message) return;\n\n            frm.clear_table(\"consignment_notes\");\n\n            let total = 0;\n\n            r.message.forEach(cn => {\n                let row = frm.add_child(\"consignment_notes\");\n                row.consignment_note = cn.name;\n                row.consignment_date = cn.posting_date;\n                row.route = cn.route;\n                row.freight_amount = cn.freight_amount;\n\n                total += cn.freight_amount;\n            });\n\n            frm.set_value(\"items\", []);\n            frm.add_child(\"items\", {\n                item_code: \"Freight Charges\",\n                qty: 1,\n                rate: total\n            });\n\n            frm.refresh_fields();\n        }\n    });\n}\n",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sales Invoice",
+  "enabled": 1,
+  "modified": "2025-12-24 17:41:13.379403",
+  "module": null,
+  "name": "FilterSales",
+  "script": "frappe.ui.form.on(\"Sales Invoice\", {\n    onload: function(frm) {\n        frm.set_query(\n            \"consignment_note\",\n            \"custom_list_of_consignments\",\n            function() {\n                return {\n                    filters: {\n                        invoiced: 0\n                    }\n                };\n            }\n        );\n    }\n});\n",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Consignment Note",
+  "enabled": 1,
+  "modified": "2025-12-29 16:20:55.400072",
+  "module": null,
+  "name": "SumPkgWt",
+  "script": "function calculate_totals(frm) {\n    let total_packages = 0;\n    let total_charged_weight = 0;\n\n    // ✅ Existing logic (DO NOT CHANGE)\n    (frm.doc.good_details || []).forEach(row => {\n        total_packages += flt(row.packages);\n        total_charged_weight += flt(row.charged_weight);\n    });\n\n    frm.set_value(\"total_packages\", total_packages);\n    frm.set_value(\"total_charged_weight\", total_charged_weight);\n\n    // ✅ NEW: use already-calculated total_charged_weight\n    let rate = flt(frm.doc.rate);\n    let extra = flt(frm.doc.extra_charges);\n\n    let freight_amount = total_charged_weight * rate;\n    let total_amount = freight_amount + extra;\n\n    frm.set_value(\"total_amount\", total_amount);\n}\n\n// ===============================\n// Child table triggers (unchanged)\n// ===============================\nfrappe.ui.form.on(\"Consignment Item\", {\n    packages:function(frm) {\n        calculate_totals(frm);\n    },\n    charged_weight:function(frm) {\n        calculate_totals(frm);\n    },\n    good_details_remove:function(frm) {\n        calculate_totals(frm);\n    }\n});\n\n// ===============================\n// Parent DocType triggers\n// ===============================\nfrappe.ui.form.on(\"Consignment Note\", {\n    refresh:function(frm) {\n        calculate_totals(frm);\n    },\n    rate:function(frm) {\n        calculate_totals(frm);\n    },\n    extra_charges:function(frm) {\n        calculate_totals(frm);\n    }\n});\n",
+  "view": "Form"
+ },
+ {
+  "docstatus": 0,
+  "doctype": "Client Script",
+  "dt": "Sales Invoice",
+  "enabled": 1,
+  "modified": "2025-12-30 09:54:45.121486",
+  "module": null,
+  "name": "SalesSum",
+  "script": "function calculate_total_freight_and_weight(frm) {\n    let total_amount = 0;\n    let total_weight = 0;\n\n    (frm.doc.consignments || []).forEach(row => {\n        total_amount += flt(row.freight_amount);\n        total_weight += flt(row.total_weight);\n    });\n\n    frm.set_value(\"custom_total_amount\", total_amount);\n    frm.set_value(\"custom_total_weight\", total_weight);\n}\n\n// ===============================\n// Child Table Logic\n// ===============================\nfrappe.ui.form.on(\"Sales Invoice Consignment\", {\n    consignment_note(frm, cdt, cdn) {\n        let row = locals[cdt][cdn];\n\n        if (row.consignment_note) {\n            frappe.db.get_value(\n                \"Consignment Note\",\n                row.consignment_note,\n                [\"total_amount\", \"total_charged_weight\"],\n                (r) => {\n                    // Set values in child row\n                    row.freight_amount = r.total_amount || 0;\n                    row.total_weight = r.total_charged_weight || 0;\n\n                    frm.refresh_field(\"consignments\");\n                    calculate_total_freight_and_weight(frm);\n                }\n            );\n        }\n    },\n\n    consignments_remove(frm) {\n        calculate_total_freight_and_weight(frm);\n    }\n});\n\n// ===============================\n// Parent DocType Logic\n// ===============================\nfrappe.ui.form.on(\"Sales Invoice\", {\n    refresh(frm) {\n        calculate_total_freight_and_weight(frm);\n    }\n});\n",
+  "view": "Form"
+ }
+]
