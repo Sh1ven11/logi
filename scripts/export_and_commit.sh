@@ -17,7 +17,7 @@ read -p "Commit message: " MSG
 
 git add .
 git commit -m "$MSG" || echo "Nothing to commit"
-git push origin main
+git push origin Main
 
 echo "✅ Exported fixtures + pushed to GitHub"
 

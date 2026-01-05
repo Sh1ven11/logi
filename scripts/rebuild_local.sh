@@ -11,7 +11,7 @@ if [ "$CONFIRM" != "yes" ]; then
   exit 1
 fi
 
-cd ../../..
+cd ../..
 
 bench drop-site $SITE --force || true
 
