@@ -1,7 +1,7 @@
 {
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-12-30 15:44:42.791528",
+ "creation": "2026-01-06 00:10:19.680773",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -209,7 +209,8 @@
    "default": "0",
    "fieldname": "invoiced",
    "fieldtype": "Check",
-   "label": "Invoiced?"
+   "label": "Invoiced?",
+   "read_only": 1
   },
   {
    "fieldname": "sales_invoice",
@@ -267,7 +268,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2025-12-30 15:47:05.234321",
+ "modified": "2026-01-06 01:31:01.463319",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Consignment Note",

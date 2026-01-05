@@ -1,9 +1,8 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_rename": 1,
  "autoname": "field:challan_no",
- "creation": "2025-12-17 17:05:53.690040",
+ "creation": "2026-01-06 00:10:18.823167",
  "doctype": "DocType",
  "engine": "InnoDB",
  "field_order": [
@@ -19,7 +18,6 @@
   "column_break_eaqz",
   "driver_name",
   "license_no",
-  "amended_from",
   "party_details_section",
   "broker",
   "broker_pan",
@@ -117,16 +115,6 @@
    "fieldname": "license_no",
    "fieldtype": "Data",
    "label": "License No"
-  },
-  {
-   "fieldname": "amended_from",
-   "fieldtype": "Link",
-   "label": "Amended From",
-   "no_copy": 1,
-   "options": "Lorry Hire Challan",
-   "print_hide": 1,
-   "read_only": 1,
-   "search_index": 1
   },
   {
    "fieldname": "party_details_section",
@@ -260,12 +248,12 @@
  "index_web_pages_for_search": 1,
  "is_submittable": 1,
  "links": [],
- "modified": "2025-12-30 15:53:34.999293",
+ "modified": "2026-01-06 01:30:36.059838",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Lorry Hire Challan",
  "naming_rule": "By fieldname",
- "owner": "shivengupta11@gmail.com",
+ "owner": "Administrator",
  "permissions": [
   {
    "create": 1,
