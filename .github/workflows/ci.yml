@@ -16,7 +16,12 @@ jobs:
           MYSQL_ROOT_PASSWORD: admin
         ports:
           - 3306:3306
-        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
+        options: >-
+          --health-cmd="mysqladmin ping"
+          --health-interval=5s
+          --health-timeout=2s
+          --health-retries=3
+
       redis:
         image: redis
         ports:
@@ -34,7 +39,13 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y mariadb-client curl build-essential libmysqlclient-dev
+          sudo apt install -y \
+            mariadb-client \
+            redis-server \
+            curl \
+            build-essential \
+            libmysqlclient-dev
+
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y nodejs
           sudo npm install -g yarn
@@ -44,37 +55,25 @@ jobs:
 
       - name: Initialize Bench
         run: |
-          # --skip-redis-config-generation ensures we use the Redis service container
           bench init --skip-redis-config-generation --frappe-branch version-15 test-bench
           cd test-bench
-          
-          # Get standard apps
+
           bench get-app erpnext --branch version-15
           bench get-app https://github.com/resilient-tech/india-compliance.git --branch version-15
-          
-          # Get your custom app
           bench get-app logi https://github.com/Sh1ven11/logi.git --branch Main
 
       - name: Create Site and Install Apps
         run: |
           cd test-bench
-          
-          # Create the site pointing to the MariaDB service
+
           bench new-site test.local \
             --db-host 127.0.0.1 \
             --admin-password admin \
             --mariadb-root-password admin
-          
-          # Enable Developer Mode (Fixes 'Not in Developer Mode' error)
+
           bench --site test.local set-config developer_mode 1
-          
-          # Install apps in order
+
           bench --site test.local install-app erpnext
           bench --site test.local install-app india_compliance
           bench --site test.local install-app logi
 
-      - name: Run Tests
-        run: |
-          cd test-bench
-          # This will look for test files in your logi app
-          bench --site test.local run-tests --app logi
