@@ -10,63 +10,64 @@ jobs:
     runs-on: ubuntu-latest
 
     services:
+      # Added MariaDB service so "bench new-site" works
+      mariadb:
+        image: mariadb:10.6
+        env:
+          MYSQL_ROOT_PASSWORD: admin
+        ports:
+          - 3306:3306
+        options: --health-cmd="mysqladmin ping" --health-interval=5s --health-timeout=2s --health-retries=3
       redis:
         image: redis
         ports:
           - 6379:6379
 
     steps:
-      # 1️⃣ Checkout your repository
-      - name: Checkout code
+      - name: Checkout repo
         uses: actions/checkout@v4
 
-      # 2️⃣ Setup Python (ERPNext v15 compatible)
       - name: Setup Python
         uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      # 3️⃣ Install system dependencies required by Bench
-      - name: Install system dependencies
+      - name: Install System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y \
-            mariadb-client \
-            redis-server \
-            curl \
-            build-essential \
-            libffi-dev \
-            libssl-dev
-
-          # Install Node.js 18 (required by Frappe assets)
+          sudo apt install -y mariadb-client curl build-essential
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y nodejs
-
-          # Install Yarn
           sudo npm install -g yarn
 
-      # 4️⃣ Install Bench CLI
       - name: Install Frappe Bench
-        run: |
-          pip install frappe-bench
+        run: pip install frappe-bench
 
-      # 5️⃣ Initialize a temporary bench for testing
-      - name: Initialize test bench
+      - name: Initialize Bench
+        # Using --skip-redis-config-check because redis is in a container
         run: |
-          bench init test-bench --frappe-branch version-15
+          bench init --skip-redis-config-check --frappe-branch version-15 test-bench
           cd test-bench
           bench get-app erpnext --branch version-15
+          # Correct link for India Compliance
+          bench get-app https://github.com/resilient-tech/india-compliance.git --branch version-15
+          # Your custom app
+          bench get-app logi https://github.com/Sh1ven11/logi.git --branch Main
 
-          # Copy the current repo (logi) into bench apps
-          mv $GITHUB_WORKSPACE ./apps/logi
-
-      # 6️⃣ Create site & install logi app (validates fixtures)
-      - name: Create site and install app
+      - name: Create Site and Install Apps
         run: |
           cd test-bench
+          # Pointing to 127.0.0.1 for the service container
           bench new-site test.local \
+            --db-host 127.0.0.1 \
             --admin-password admin \
             --mariadb-root-password admin
-
+          
+          bench --site test.local install-app erpnext
+          bench --site test.local install-app india_compliance
           bench --site test.local install-app logi
 
+      - name: Run Tests
+        run: |
+          cd test-bench
+          bench --site test.local run-tests --app logi
