@@ -1,0 +1,49 @@
+name: Logi CI
+
+on:
+  push:
+    branches: [ Main ]
+  pull_request:
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+
+    services:
+      redis:
+        image: redis
+        ports:
+          - 6379:6379
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.10"
+
+      - name: Install system deps
+        run: |
+          sudo apt update
+          sudo apt install -y mariadb-client redis-tools curl
+          curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
+          sudo apt install -y nodejs
+          sudo npm install -g yarn
+
+      - name: Install bench
+        run: |
+          pip install frappe-bench
+
+      - name: Init bench
+        run: |
+          bench init test-bench --frappe-branch version-15
+          cd test-bench
+          bench get-app erpnext --branch version-15
+          cp -r $GITHUB_WORKSPACE ./apps/logi
+
+      - name: Install app & import fixtures
+        run: |
+          cd test-bench
+          bench new-site test.local --admin-password admin --mariadb-root-password admin
+          bench --site test.local install-app logi
+
