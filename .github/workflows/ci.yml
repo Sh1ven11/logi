@@ -61,7 +61,7 @@ jobs:
             --db-host 127.0.0.1 \
             --admin-password admin \
             --mariadb-root-password admin
-          
+	  bench --site test.local set-config developer_mode 1          
           bench --site test.local install-app erpnext
           bench --site test.local install-app india_compliance
           bench --site test.local install-app logi
