@@ -16,34 +16,57 @@ jobs:
           - 6379:6379
 
     steps:
-      - uses: actions/checkout@v4
+      # 1️⃣ Checkout your repository
+      - name: Checkout code
+        uses: actions/checkout@v4
 
-      - uses: actions/setup-python@v5
+      # 2️⃣ Setup Python (ERPNext v15 compatible)
+      - name: Setup Python
+        uses: actions/setup-python@v5
         with:
           python-version: "3.10"
 
-      - name: Install system deps
+      # 3️⃣ Install system dependencies required by Bench
+      - name: Install system dependencies
         run: |
           sudo apt update
-          sudo apt install -y mariadb-client redis-tools curl
+          sudo apt install -y \
+            mariadb-client \
+            redis-server \
+            curl \
+            build-essential \
+            libffi-dev \
+            libssl-dev
+
+          # Install Node.js 18 (required by Frappe assets)
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y nodejs
+
+          # Install Yarn
           sudo npm install -g yarn
 
-      - name: Install bench
+      # 4️⃣ Install Bench CLI
+      - name: Install Frappe Bench
         run: |
           pip install frappe-bench
 
-      - name: Init bench
+      # 5️⃣ Initialize a temporary bench for testing
+      - name: Initialize test bench
         run: |
           bench init test-bench --frappe-branch version-15
           cd test-bench
           bench get-app erpnext --branch version-15
+
+          # Copy the current repo (logi) into bench apps
           cp -r $GITHUB_WORKSPACE ./apps/logi
 
-      - name: Install app & import fixtures
+      # 6️⃣ Create site & install logi app (validates fixtures)
+      - name: Create site and install app
         run: |
           cd test-bench
-          bench new-site test.local --admin-password admin --mariadb-root-password admin
+          bench new-site test.local \
+            --admin-password admin \
+            --mariadb-root-password admin
+
           bench --site test.local install-app logi
 
