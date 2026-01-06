@@ -2,7 +2,7 @@ name: Logi CI
 
 on:
   push:
-    branches: [ Main ] # Ensure this matches your actual branch name (Main vs main)
+    branches: [ Main ]
   pull_request:
 
 jobs:
@@ -34,7 +34,7 @@ jobs:
       - name: Install System Dependencies
         run: |
           sudo apt update
-          sudo apt install -y mariadb-client curl build-essential
+          sudo apt install -y mariadb-client curl build-essential libmysqlclient-dev
           curl -fsSL https://deb.nodesource.com/setup_18.x | sudo -E bash -
           sudo apt install -y nodejs
           sudo npm install -g yarn
@@ -43,26 +43,32 @@ jobs:
         run: pip install frappe-bench
 
       - name: Initialize Bench
-        # Fixed the flag name here
         run: |
+          # --skip-redis-config-generation ensures we use the Redis service container
           bench init --skip-redis-config-generation --frappe-branch version-15 test-bench
           cd test-bench
+          
+          # Get standard apps
           bench get-app erpnext --branch version-15
-          # Correct India Compliance Link
           bench get-app https://github.com/resilient-tech/india-compliance.git --branch version-15
-          # Your Logi app
+          
+          # Get your custom app
           bench get-app logi https://github.com/Sh1ven11/logi.git --branch Main
 
       - name: Create Site and Install Apps
         run: |
           cd test-bench
-          # Connect to the MariaDB service via 127.0.0.1
+          
+          # Create the site pointing to the MariaDB service
           bench new-site test.local \
             --db-host 127.0.0.1 \
             --admin-password admin \
             --mariadb-root-password admin
-
-	  bench --site test.local set-config developer_mode 1          
+          
+          # Enable Developer Mode (Fixes 'Not in Developer Mode' error)
+          bench --site test.local set-config developer_mode 1
+          
+          # Install apps in order
           bench --site test.local install-app erpnext
           bench --site test.local install-app india_compliance
           bench --site test.local install-app logi
@@ -70,4 +76,5 @@ jobs:
       - name: Run Tests
         run: |
           cd test-bench
+          # This will look for test files in your logi app
           bench --site test.local run-tests --app logi
