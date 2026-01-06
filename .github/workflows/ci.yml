@@ -58,7 +58,7 @@ jobs:
           bench get-app erpnext --branch version-15
 
           # Copy the current repo (logi) into bench apps
-          cp -r $GITHUB_WORKSPACE ./apps/logi
+          mv $GITHUB_WORKSPACE ./apps/logi
 
       # 6️⃣ Create site & install logi app (validates fixtures)
       - name: Create site and install app
