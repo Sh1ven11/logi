@@ -36,3 +36,20 @@ jobs:
           script: |
             cd ~/frappe-bench
             ./scripts/deploy.sh
+            
+      - name: Cleanup old snapshots (keep last 3)
+        run: |
+          SNAPSHOTS=$(aws rds describe-db-snapshots \
+            --db-instance-identifier ${{ secrets.RDS_INSTANCE_ID }} \
+            --snapshot-type manual \
+            --query 'DBSnapshots[*].DBSnapshotIdentifier' \
+            --output text)
+
+          COUNT=0
+          for SNAP in $SNAPSHOTS; do
+            COUNT=$((COUNT+1))
+            if [ $COUNT -gt 3 ]; then
+              echo "Deleting old snapshot: $SNAP"
+              aws rds delete-db-snapshot --db-snapshot-identifier $SNAP
+            fi
+          done
