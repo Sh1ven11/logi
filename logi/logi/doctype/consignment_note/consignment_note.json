@@ -121,11 +121,13 @@
    "fieldtype": "Column Break"
   },
   {
+   "fetch_from": "consign_address.gstin",
    "fieldname": "gst_consignor",
    "fieldtype": "Data",
    "label": "Consignor Gst"
   },
   {
+   "fetch_from": "consignee_address.gstin",
    "fieldname": "gst_consignee",
    "fieldtype": "Data",
    "label": "Consignee GST"
@@ -268,7 +270,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-06 01:31:01.463319",
+ "modified": "2026-01-08 16:13:15.147455",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Consignment Note",

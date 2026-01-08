@@ -1,8 +1,7 @@
 {
- "_liked_by": "[\"Administrator\"]",
  "actions": [],
  "allow_rename": 1,
- "creation": "2025-12-23 13:34:03.227974",
+ "creation": "2026-01-06 00:10:19.218454",
  "doctype": "DocType",
  "editable_grid": 1,
  "engine": "InnoDB",
@@ -18,6 +17,7 @@
   {
    "fieldname": "consignment_note",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Consignment Note",
    "options": "Consignment Note"
   },
@@ -31,6 +31,7 @@
    "fetch_from": "consignment_note.total_amount",
    "fieldname": "total_amount",
    "fieldtype": "Currency",
+   "in_list_view": 1,
    "label": "Total Amount",
    "read_only": 1
   },
@@ -38,18 +39,21 @@
    "fetch_from": "consignment_note.eway_bill_no",
    "fieldname": "eway_bill",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "E-Way Bill Number"
   },
   {
    "fetch_from": "consignment_note.total_packages",
    "fieldname": "total_packages",
    "fieldtype": "Int",
+   "in_list_view": 1,
    "label": "Packages"
   },
   {
    "fetch_from": "consignment_note.total_charged_weight",
    "fieldname": "total_weight",
    "fieldtype": "Float",
+   "in_list_view": 1,
    "label": "Weight"
   }
  ],
@@ -57,7 +61,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2025-12-30 15:53:58.145388",
+ "modified": "2026-01-08 16:14:55.449390",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Sales Invoice Consignment",
