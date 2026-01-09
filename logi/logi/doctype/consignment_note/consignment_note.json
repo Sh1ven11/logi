@@ -1,6 +1,6 @@
 {
  "actions": [],
- "allow_rename": 1,
+ "autoname": "field:cn_number",
  "creation": "2026-01-06 00:10:19.680773",
  "doctype": "DocType",
  "engine": "InnoDB",
@@ -91,6 +91,7 @@
   {
    "fieldname": "consignor",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Consignor",
    "options": "Customer"
   },
@@ -103,6 +104,7 @@
   {
    "fieldname": "consignee",
    "fieldtype": "Link",
+   "in_list_view": 1,
    "label": "Consignee",
    "options": "Customer"
   },
@@ -195,6 +197,7 @@
   {
    "fieldname": "total_amount",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "Total Amount"
   },
   {
@@ -211,6 +214,7 @@
    "default": "0",
    "fieldname": "invoiced",
    "fieldtype": "Check",
+   "in_list_view": 1,
    "label": "Invoiced?",
    "read_only": 1
   },
@@ -228,6 +232,7 @@
   {
    "fieldname": "eway_bill_no",
    "fieldtype": "Data",
+   "in_list_view": 1,
    "label": "E Way Bill No",
    "length": 20
   },
@@ -270,10 +275,11 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-08 16:13:15.147455",
+ "modified": "2026-01-09 09:30:49.350522",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Consignment Note",
+ "naming_rule": "By fieldname",
  "owner": "Administrator",
  "permissions": [
   {

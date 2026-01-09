@@ -257,6 +257,12 @@ fixtures = [
             ["module", "=", "Logi"]
         ]
     },
+   {
+        "doctype": "Workspace",
+        "filters": [
+            ["name", "=", "Home"]
+        ]
+    },
     "Custom Field",
     "Property Setter",
     "Client Script",
