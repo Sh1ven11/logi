@@ -42,14 +42,25 @@ jobs:
           SNAPSHOTS=$(aws rds describe-db-snapshots \
             --db-instance-identifier ${{ secrets.RDS_INSTANCE_ID }} \
             --snapshot-type manual \
-            --query 'DBSnapshots[*].DBSnapshotIdentifier' \
+            --query 'DBSnapshots | sort_by(@, &SnapshotCreateTime) | [].DBSnapshotIdentifier' \
             --output text)
-
+      
           COUNT=0
           for SNAP in $SNAPSHOTS; do
             COUNT=$((COUNT+1))
+      
             if [ $COUNT -gt 3 ]; then
-              echo "Deleting old snapshot: $SNAP"
-              aws rds delete-db-snapshot --db-snapshot-identifier $SNAP
+              STATUS=$(aws rds describe-db-snapshots \
+                --db-snapshot-identifier "$SNAP" \
+                --query 'DBSnapshots[0].Status' \
+                --output text)
+      
+              if [[ "$STATUS" == "available" || "$STATUS" == "failed" ]]; then
+                echo "Deleting old snapshot: $SNAP (status=$STATUS)"
+                aws rds delete-db-snapshot --db-snapshot-identifier "$SNAP"
+              else
+                echo "Skipping snapshot: $SNAP (status=$STATUS)"
+              fi
             fi
           done
+      
