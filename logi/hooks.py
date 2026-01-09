@@ -261,8 +261,13 @@ fixtures = [
         "doctype": "Workspace",
        
     },
-    "Role",
-    "Role Permission for Page and Report",
+    {
+        "doctype": "Role",
+        "filters": [
+            ["name", "=", "Logi User"]
+        ]
+    },
+
     "Custom Field",
     "Property Setter",
     "Client Script",
