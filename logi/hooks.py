@@ -259,10 +259,10 @@ fixtures = [
     },
    {
         "doctype": "Workspace",
-        "filters": [
-            ["name", "=", "Home"]
-        ]
+       
     },
+    "Role",
+    "Role Permission for Page and Report",
     "Custom Field",
     "Property Setter",
     "Client Script",
