@@ -249,6 +249,11 @@ app_license = "mit"
 
 # Fixtures
 # --------
+doc_events = {
+    "Sales Invoice": {
+        "on_submit": "logi.sales_invoice.update_consignments"
+    }
+}
 
 fixtures = [
     {
