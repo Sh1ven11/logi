@@ -254,6 +254,11 @@ doc_events = {
         "on_submit": "logi.sales_invoice.update_consignments"
     }
 }
+scheduler_events = {
+    "daily": [
+        "logi.eway.send_eway_expiry_reminders"
+    ]
+}
 
 fixtures = [
     {
