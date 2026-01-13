@@ -51,7 +51,6 @@
   {
    "fieldname": "cn_number",
    "fieldtype": "Data",
-   "in_list_view": 1,
    "label": "Consignment No",
    "reqd": 1,
    "unique": 1
@@ -275,7 +274,7 @@
  "grid_page_length": 50,
  "index_web_pages_for_search": 1,
  "links": [],
- "modified": "2026-01-09 09:30:49.350522",
+ "modified": "2026-01-13 11:41:05.090715",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Consignment Note",

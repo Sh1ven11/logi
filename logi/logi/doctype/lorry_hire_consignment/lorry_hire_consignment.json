@@ -25,7 +25,7 @@
    "options": "Consignment Note"
   },
   {
-   "fetch_from": "consignment_note.packages",
+   "fetch_from": "consignment_note.total_packages",
    "fieldname": "packages",
    "fieldtype": "Int",
    "in_list_view": 1,
@@ -33,7 +33,7 @@
    "non_negative": 1
   },
   {
-   "fetch_from": "consignment_note.actual_weight",
+   "fetch_from": "consignment_note.total_charged_weight",
    "fieldname": "weight",
    "fieldtype": "Float",
    "in_list_view": 1,
@@ -46,7 +46,7 @@
  "index_web_pages_for_search": 1,
  "istable": 1,
  "links": [],
- "modified": "2026-01-08 16:15:08.735527",
+ "modified": "2026-01-13 22:35:54.301048",
  "modified_by": "Administrator",
  "module": "Logi",
  "name": "Lorry Hire consignment",
